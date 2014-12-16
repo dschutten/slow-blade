@@ -11,12 +11,10 @@ public class ZoomController : MonoBehaviour {
 	public float lead = 2.5f; // amout to lead the target
 	public float minView = 30f; // closest the camera gets.
 	public float margin = 2f; // added to distance 
-	public float headroom = 5f;
+	public float vertAdjust = 5f;
 	public float camRefresh = 0.5f;
 	public float lerpRate = 2f;
 	//public float wiggleRoom = 2f;
-	public float horWiggleRoom = 2f;
-	public float vertWiggleRoom = 2f;
 
 	Vector2 playerPos;
 	Vector2 lastPos;
@@ -49,7 +47,7 @@ public class ZoomController : MonoBehaviour {
 		playerPos = target.transform.position;
 
 		Vector2 leadPoint = (direction *  (lead)) + playerPos;
-		leadPoint.y += headroom;
+		leadPoint.y += vertAdjust;
 
 		float distance = Vector2.Distance(target.transform.position, blade.transform.position);
 		distance= Mathf.Max(distance, minView); // gets whichever is bigger.
@@ -62,8 +60,6 @@ public class ZoomController : MonoBehaviour {
 		Vector3 targVector = new Vector3 (midpointX, midpointY, -10f); //gives this camera a new position
 		float targCamSize = distance;
 
-		float _smoothDampTime = smoothDampTime;
-
 
 		//checks if the new camera settings will take it outside the levelbounds
 		targCamSize = CheckCameraZoom(targCamSize);
@@ -73,6 +69,8 @@ public class ZoomController : MonoBehaviour {
 		camera.orthographicSize = targCamSize; //sets the view field of the camera.
 
 		//move camera to new postion
+		float _smoothDampTime = smoothDampTime;
+
 		transform.position = Vector3.SmoothDamp( transform.position, targVector, ref smoothDampVelocity, _smoothDampTime);
 		//transform.position = targVector;
 	}
@@ -125,7 +123,6 @@ public class ZoomController : MonoBehaviour {
 			_checkVec.x = rightBound - xdistance;		
 		}
 	
-	
 		Vector3 finalVector = _checkVec;
 		
 		return finalVector;
@@ -163,32 +160,19 @@ public class ZoomController : MonoBehaviour {
 	IEnumerator GetDirection()
 	{
 		while (true){
-		Debug.Log ("Get Direction");
-			//Makes a vector for the players movement.
+			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
 
-			// updates the player's velocity
-			playerVel = moveVec.magnitude / Time.deltaTime;
-			if (playerVel == 0f){
-				playerVel = 0.000001f;
-			}
+			//Makes an average of the last and current vector.
+			//Vector2 moveVec = (playerPos + lastPos) / 2f;
 
 			if (moveVec != Vector2.zero){ 
-				float deltaY= Mathf.Abs(lastPos.y - playerPos.y);
-				float deltaX= Mathf.Abs(lastPos.x - playerPos.x);
-				Vector2 tempDirection = moveVec.normalized;
-
-				if ( deltaX >= horWiggleRoom)
-				{
-					direction.x = tempDirection.x;
-					lastPos.x = target.transform.position.x;
-				}
-				if (deltaY >= vertWiggleRoom)
-				{
-					direction.y = tempDirection.y;
-					lastPos.y = target.transform.position.y;
-				}
+				// updates the player's velocity
+				playerVel = moveVec.magnitude / Time.deltaTime;
+				direction = moveVec.normalized;
+				lastPos = target.transform.position;
 			}
+
 		yield return new WaitForSeconds(camRefresh);
 		}
 	}
