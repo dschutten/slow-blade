@@ -10,7 +10,9 @@ public class LeadingCamera : MonoBehaviour {
 	public float minView = 7.5f;
 	public float margin = 2f;
 	public float lerpRate=2f;
-	public float groundBound = -15f;
+
+	public Vector3 smoothDampVelocity;
+	public float smoothTime = 2.5f;
 
 	float playerSpeed;
 
@@ -25,19 +27,22 @@ public class LeadingCamera : MonoBehaviour {
 	void Start () {
 		playerPos = target.transform.position;
 		lastPos = target.transform.position;
-		StartCoroutine(GetDirection());
+		//StartCoroutine(GetDirection());
 	}
 	
 	// Update is called once per frame after Update (put camera stuff here)
 	void LateUpdate () {
-
+		SetTargDirection ();
 		playerPos = target.transform.position;
 		leadPoint = (direction * (lead)) + (playerPos);
 
 		Vector3 targVector = new Vector3 (leadPoint.x, leadPoint.y, -10f); //gives this camera a new position
 		//transform.position = targVector;
 
-		transform.position = Vector3.Lerp(transform.position, targVector, Time.deltaTime * lerpRate);
+		//transform.position = Vector3.Lerp(transform.position, targVector, Time.deltaTime * lerpRate);
+		transform.position = Vector3.SmoothDamp(transform.position, targVector, ref smoothDampVelocity, smoothTime);
+		//transform.position = Vector3.SmoothDamp( transform.position, target.position - cameraOffset, ref _smoothDampVelocity, smoothDampTime );
+
 	}
 
 
@@ -52,6 +57,15 @@ public class LeadingCamera : MonoBehaviour {
 			lastPos = target.transform.position;
 			yield return new WaitForSeconds(0.5f);
 		}
+	}
+
+	void SetTargDirection()
+	{
+			Vector2 moveVec = new Vector2 (playerPos.x - lastPos.x, playerPos.y - lastPos.y);
+			//if (moveVec != Vector2.zero){
+			direction = moveVec.normalized;
+			//}
+			lastPos = target.transform.position;
 	}
 	
 }

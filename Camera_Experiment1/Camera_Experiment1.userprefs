@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ZoomController.cs">
     <Files>
-      <File FileName="Assets/Scripts/ZoomController.cs" Line="91" Column="52" />
-      <File FileName="Assets/Scripts/BindCamera.cs" Line="9" Column="20" />
+      <File FileName="Assets/Scripts/LeadingCamera.cs" Line="35" Column="23" />
+      <File FileName="Assets/Scripts/BindCamera.cs" Line="1" Column="1" />
+      <File FileName="../../../CharacterController2D-master/Assets/CharacterController2D/Demo/scripts/SmoothFollow.cs" Line="50" Column="13" />
+      <File FileName="Assets/Scripts/ZoomController.cs" Line="127" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
