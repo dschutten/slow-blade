@@ -27,12 +27,12 @@ public class LeadingCamera : MonoBehaviour {
 	void Start () {
 		playerPos = target.transform.position;
 		lastPos = target.transform.position;
-		StartCoroutine(GetDirection());
+		//StartCoroutine(GetDirection());
 	}
 	
 	// Update is called once per frame after Update (put camera stuff here)
 	void LateUpdate () {
-
+		SetTargDirection ();
 		playerPos = target.transform.position;
 		leadPoint = (direction * (lead)) + (playerPos);
 
@@ -57,6 +57,15 @@ public class LeadingCamera : MonoBehaviour {
 			lastPos = target.transform.position;
 			yield return new WaitForSeconds(0.5f);
 		}
+	}
+
+	void SetTargDirection()
+	{
+			Vector2 moveVec = new Vector2 (playerPos.x - lastPos.x, playerPos.y - lastPos.y);
+			//if (moveVec != Vector2.zero){
+			direction = moveVec.normalized;
+			//}
+			lastPos = target.transform.position;
 	}
 	
 }

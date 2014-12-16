@@ -11,6 +11,7 @@ public class ZoomController : MonoBehaviour {
 	public float lead = 2.5f; // amout to lead the target
 	public float minView = 30f; // closest the camera gets.
 	public float margin = 2f; // added to distance 
+	public float headroom = 5f;
 	public float camRefresh = 0.5f;
 	public float lerpRate = 2f;
 	//public float wiggleRoom = 2f;
@@ -21,20 +22,25 @@ public class ZoomController : MonoBehaviour {
 	Vector2 lastPos;
 	Vector2 direction;
 	Vector2 leadPoint;
+	float playerVel;
 
 	//define screen edges
-	public float bottomBound;
-	public float topBound;
-	public float rightBound;
-	public float leftBound;
+	float bottomBound;
+	float topBound;
+	float rightBound;
+	float leftBound;
 	float levelWidth;
 	float levelHeight;
-	
+
+	// use for SmoothDamp
+	public float smoothDampTime = 0.5f;
+	Vector3 smoothDampVelocity;
+
 	// Use this for initialization
 	void Start () {
 		lastPos = target.transform.position;
-		StartCoroutine(GetDirection());
 		SetBounds ();
+		StartCoroutine(GetDirection());
 	}
 	
 	// Update is called once per frame after Update (put camera stuff here)
@@ -43,6 +49,7 @@ public class ZoomController : MonoBehaviour {
 		playerPos = target.transform.position;
 
 		Vector2 leadPoint = (direction *  (lead)) + playerPos;
+		leadPoint.y += headroom;
 
 		float distance = Vector2.Distance(target.transform.position, blade.transform.position);
 		distance= Mathf.Max(distance, minView); // gets whichever is bigger.
@@ -54,25 +61,23 @@ public class ZoomController : MonoBehaviour {
 
 		Vector3 targVector = new Vector3 (midpointX, midpointY, -10f); //gives this camera a new position
 		float targCamSize = distance;
-		//transform.position = targVector;
+
+		float _smoothDampTime = smoothDampTime;
+
 
 		//checks if the new camera settings will take it outside the levelbounds
-		//Debug.Log("1 targCamSize:" + targCamSize+"Level Height:"+levelHeight);
-
 		targCamSize = CheckCameraZoom(targCamSize);
 		targVector = CheckCameraPos(targVector, targCamSize);
 
-		//Debug.Log("2 targCamSize:" + targCamSize+"Level Height:"+levelHeight);
-		//Debug.Log("targVector:" + targVector);
-
-	
 		//apply new target vector
 		camera.orthographicSize = targCamSize; //sets the view field of the camera.
 
-		transform.position = Vector3.Lerp(transform.position, targVector, Time.deltaTime * lerpRate); //lerp to new position
-
+		//move camera to new postion
+		transform.position = Vector3.SmoothDamp( transform.position, targVector, ref smoothDampVelocity, _smoothDampTime);
+		//transform.position = targVector;
 	}
 
+	//Finds props with the tags Ground,Ceiling,LeftWall, and RightWall, and sets the bound variables to their positions.
 	void SetBounds ()
 	{
 		GameObject[] ground = GameObject.FindGameObjectsWithTag("Ground");
@@ -91,6 +96,7 @@ public class ZoomController : MonoBehaviour {
 		levelHeight = Mathf.Abs (topBound - bottomBound);
 	}
 
+	//Checks the proposed new camera position to see if it's with in the level bounds and corrects if necessariy.
 	public Vector3 CheckCameraPos(Vector3 checkVec, float height)
 	{
 		Vector3 _checkVec = checkVec;
@@ -125,6 +131,8 @@ public class ZoomController : MonoBehaviour {
 		return finalVector;
 	}
 
+
+	//Checks if the proposed size of the orthographic camera is to big for the level bounds and corrects if necessary.
 	public float CheckCameraZoom (float height)
 	{
 		float ydistance = height*2f; // this is the height of the screen
@@ -151,13 +159,19 @@ public class ZoomController : MonoBehaviour {
 		}
 	}
 
-
-
+	
 	IEnumerator GetDirection()
 	{
-		while(true)
-		{
-			Vector2 moveVec = new Vector2 (playerPos.x - lastPos.x, playerPos.y - lastPos.y);
+		while (true){
+		Debug.Log ("Get Direction");
+			//Makes a vector for the players movement.
+			Vector2 moveVec = playerPos - lastPos;
+
+			// updates the player's velocity
+			playerVel = moveVec.magnitude / Time.deltaTime;
+			if (playerVel == 0f){
+				playerVel = 0.000001f;
+			}
 
 			if (moveVec != Vector2.zero){ 
 				float deltaY= Mathf.Abs(lastPos.y - playerPos.y);
@@ -175,10 +189,7 @@ public class ZoomController : MonoBehaviour {
 					lastPos.y = target.transform.position.y;
 				}
 			}
-
-
-
-			yield return new WaitForSeconds(camRefresh);
+		yield return new WaitForSeconds(camRefresh);
 		}
 	}
 
