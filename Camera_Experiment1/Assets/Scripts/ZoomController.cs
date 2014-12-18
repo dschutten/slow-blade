@@ -13,7 +13,6 @@ public class ZoomController : MonoBehaviour {
 	public float margin = 2f; // added to distance 
 	public float vertAdjust = 5f;
 	public float camRefresh = 0.5f;
-	public float lerpRate = 2f;
 	//public float wiggleRoom = 2f;
 
 	Vector2 playerPos;
@@ -82,9 +81,7 @@ public class ZoomController : MonoBehaviour {
 
 		//move camera to new postion
 		float _smoothDampTime = smoothDampTime;
-
 		transform.position = Vector3.SmoothDamp( transform.position, targVector, ref smoothDampVelocity, _smoothDampTime);
-		//transform.position = targVector;
 	}
 
 	//Finds props with the tags Ground,Ceiling,LeftWall, and RightWall, and sets the bound variables to their positions.
@@ -174,6 +171,7 @@ public class ZoomController : MonoBehaviour {
 		while (true){
 			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
+
 			if (moveVec != Vector2.zero){ 
 			//Adds the player's direction to the array to be averaged.
 			dirSamples[currentSample] = moveVec;  
