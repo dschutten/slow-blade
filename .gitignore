@@ -27,3 +27,8 @@ NetworkManager.asset
 ScriptMapper
 unity default resources
 unity editor resources
+*.dll
+
+Camera_Experiment1/Library/ScriptAssemblies/Assembly-CSharp.dll.mdb
+
+Camera_Experiment1/Library/ScriptAssemblies/Assembly-CSharp.dll
