@@ -174,7 +174,7 @@ public class ZoomController : MonoBehaviour {
 		while (true){
 			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
-
+			if (moveVec != Vector2.zero){ 
 			//Adds the player's direction to the array to be averaged.
 			dirSamples[currentSample] = moveVec;  
 			currentSample++;
@@ -193,7 +193,7 @@ public class ZoomController : MonoBehaviour {
 			//Makes an average of the last and current vector.
 			//Vector2 moveVec = (playerPos + lastPos) / 2f;
 
-			if (moveVec != Vector2.zero){ 
+
 				// updates the player's velocity
 				playerVel = moveVec.magnitude / Time.deltaTime;
 				direction = moveVec.normalized;
