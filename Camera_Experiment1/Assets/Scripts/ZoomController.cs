@@ -30,13 +30,25 @@ public class ZoomController : MonoBehaviour {
 	float levelWidth;
 	float levelHeight;
 
+	//for use with direction sampling for camera smoothing.
+	public int sampleNum = 10;
+	int currentSample= 0;
+	Vector2[] dirSamples ;
+
 	// use for SmoothDamp
 	public float smoothDampTime = 0.5f;
 	Vector3 smoothDampVelocity;
 
 	// Use this for initialization
 	void Start () {
-		lastPos = target.transform.position;
+		lastPos = target.transform.position; //get's players initial postioins
+
+		dirSamples = new Vector2[sampleNum]; //fills the camera smoothing array with initial values.
+		for(int i = 0; i < dirSamples.Length; i++)
+		{
+			dirSamples[i] = lastPos;     
+		}
+
 		SetBounds ();
 		StartCoroutine(GetDirection());
 	}
@@ -162,6 +174,21 @@ public class ZoomController : MonoBehaviour {
 		while (true){
 			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
+
+			//Adds the player's direction to the array to be averaged.
+			dirSamples[currentSample] = moveVec;  
+			currentSample++;
+			if (currentSample >= dirSamples.Length){
+				currentSample = 0;	
+			}
+
+			//Average the direction samples
+			Vector2 dirSum = new Vector2(0,0);
+			for(int i = 0; i < dirSamples.Length; i++)
+			{
+				dirSum += dirSamples[i];    
+			}
+			moveVec = dirSum/dirSamples.Length;
 
 			//Makes an average of the last and current vector.
 			//Vector2 moveVec = (playerPos + lastPos) / 2f;
