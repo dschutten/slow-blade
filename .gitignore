@@ -15,3 +15,8 @@
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+*.userprefs
+
+Camera_Experiment1/Assets/.DS_Store
+
+Camera_Experiment1/Camera_Experiment1.userprefs
