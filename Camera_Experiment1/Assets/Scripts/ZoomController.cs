@@ -168,34 +168,37 @@ public class ZoomController : MonoBehaviour {
 	
 	IEnumerator GetDirection()
 	{
-		while (true){
+		while (true)
+		{
 			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
 
-			if (moveVec != Vector2.zero){ 
+			if (moveVec != Vector2.zero)
+			{ 
 			//Adds the player's direction to the array to be averaged.
 			dirSamples[currentSample] = moveVec;  
 			currentSample++;
-			if (currentSample >= dirSamples.Length){
-				currentSample = 0;	
-			}
+				if (currentSample >= dirSamples.Length)
+				{
+					currentSample = 0;	
+				}
 
 			//Average the direction samples
 			Vector2 dirSum = new Vector2(0,0);
-			for(int i = 0; i < dirSamples.Length; i++)
-			{
-				dirSum += dirSamples[i];    
-			}
+				for(int i = 0; i < dirSamples.Length; i++)
+				{
+					dirSum += dirSamples[i];    
+				}
 			moveVec = dirSum/dirSamples.Length;
 
 			//Makes an average of the last and current vector.
 			//Vector2 moveVec = (playerPos + lastPos) / 2f;
 
-
 				// updates the player's velocity
 				playerVel = moveVec.magnitude / Time.deltaTime;
 				direction = moveVec.normalized;
 				lastPos = target.transform.position;
+				Debug.Log(dirSamples.Length);
 			}
 
 		yield return new WaitForSeconds(camRefresh);
