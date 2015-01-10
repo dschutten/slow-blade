@@ -9,7 +9,7 @@ public class ZoomController : MonoBehaviour {
 	public Transform blade;
 	//public float bottom = -10f; // Bottom edge seen by the camera
 	public float lead = 2.5f; // amout to lead the target
-	public float minView = 30f; // closest the camera gets.
+	public float minView = 5f; // closest the camera gets.
 	public float margin = 2f; // added to distance 
 	public float vertAdjust = 5f;
 	public float camRefresh = 0.5f;
