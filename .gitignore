@@ -7,11 +7,13 @@
 *.csproj
 *.unityproj
 *.sln
+*.dwlt
 *.suo
 *.user
 *.userprefs
 *.pidb
 *.booproj
+*.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
@@ -45,16 +47,8 @@ Camera_Experiment1/Library/CurrentLayout.dwlt
 
 Camera_Experiment1/Library/assetDatabase3
 
-*.dwlt
 
-*.dwlt
 
-*.sln
 
-*.meta
 
-*.sln
 
-*.sln
-
-*.dwlt
