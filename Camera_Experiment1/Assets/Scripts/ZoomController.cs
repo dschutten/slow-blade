@@ -13,7 +13,8 @@ public class ZoomController : MonoBehaviour {
 	public float margin = 2f; // added to distance 
 	public float vertAdjust = 5f;
 	public float camRefresh = 0.5f;
-	//public float wiggleRoom = 2f;
+	public float moveThresh = 0.02f;
+
 
 	Vector2 playerPos;
 	Vector2 lastPos;
@@ -173,8 +174,11 @@ public class ZoomController : MonoBehaviour {
 			//Makes a vector for the players direction.
 			Vector2 moveVec = playerPos - lastPos;
 
-			if (moveVec != Vector2.zero)
+			//Only updat if player is actually moving
+			//if (moveVec != Vector2.zero)
+			if (moveVec.x > moveThresh || moveVec.y > moveThresh)
 			{ 
+				Debug.Log ("Thresh Met");
 			//Adds the player's direction to the array to be averaged.
 			dirSamples[currentSample] = moveVec;  
 			currentSample++;
@@ -198,7 +202,7 @@ public class ZoomController : MonoBehaviour {
 				playerVel = moveVec.magnitude / Time.deltaTime;
 				direction = moveVec.normalized;
 				lastPos = target.transform.position;
-				Debug.Log(dirSamples.Length);
+				//Debug.Log(dirSamples.Length);
 			}
 
 		yield return new WaitForSeconds(camRefresh);
