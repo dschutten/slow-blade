@@ -58,7 +58,7 @@ public class ZoomController : MonoBehaviour {
 
 		playerPos = target.transform.position;
 
-		Vector2 leadPoint = (direction *  (lead)) + playerPos;
+		Vector2 leadPoint = (direction *  (playerVel * 3 + lead)) + playerPos;
 		leadPoint.y += vertAdjust;
 
 		float distance = Vector2.Distance(target.transform.position, blade.transform.position);
@@ -176,9 +176,10 @@ public class ZoomController : MonoBehaviour {
 
 			//Only updat if player is actually moving
 			//if (moveVec != Vector2.zero)
-			if (moveVec.x > moveThresh || moveVec.y > moveThresh)
+			if (Mathf.Abs(moveVec.x) > moveThresh || Mathf.Abs(moveVec.y) > moveThresh)
 			{ 
-				Debug.Log ("Thresh Met");
+			//Debug.Log ("Thresh Met: movVec.x="+ moveVec.x + ", movVec.y=" + moveVec.y);
+	
 			//Adds the player's direction to the array to be averaged.
 			dirSamples[currentSample] = moveVec;  
 			currentSample++;
@@ -199,7 +200,8 @@ public class ZoomController : MonoBehaviour {
 			//Vector2 moveVec = (playerPos + lastPos) / 2f;
 
 				// updates the player's velocity
-				playerVel = moveVec.magnitude / Time.deltaTime;
+				playerVel = moveVec.magnitude;
+				Debug.Log(playerVel);
 				direction = moveVec.normalized;
 				lastPos = target.transform.position;
 				//Debug.Log(dirSamples.Length);
